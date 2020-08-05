@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.androiddevs.mvvmnewsapp.Constants
 import com.androiddevs.mvvmnewsapp.R
 import com.androiddevs.mvvmnewsapp.adapter.NewsAdapter
 import com.androiddevs.mvvmnewsapp.model.Resource
@@ -72,5 +74,12 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
             adapter = newsAdapter
             layoutManager = LinearLayoutManager(activity)
         }
+        rvBreakingNews.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                Constants.breakingNewsPosition = (recyclerView.getChildAt(0).layoutParams as RecyclerView.LayoutParams).viewAdapterPosition
+            }
+        })
+        rvBreakingNews.scrollToPosition(Constants.breakingNewsPosition)
     }
 }
