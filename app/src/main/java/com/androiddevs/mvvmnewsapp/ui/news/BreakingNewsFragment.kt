@@ -1,49 +1,43 @@
-package com.androiddevs.mvvmnewsapp.ui.fragments
+package com.androiddevs.mvvmnewsapp.ui.news
 
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.androiddevs.mvvmnewsapp.Constants.Companion.SEARCH_NEWS_TIME_DELAY
 import com.androiddevs.mvvmnewsapp.R
-import com.androiddevs.mvvmnewsapp.adapters.NewsAdapter
-import com.androiddevs.mvvmnewsapp.ui.NewsActivity
-import com.androiddevs.mvvmnewsapp.utils.Resource
-import com.androiddevs.mvvmnewsapp.viewmodels.NewsViewModel
-import kotlinx.android.synthetic.main.fragment_search_news.*
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.androiddevs.mvvmnewsapp.adapter.NewsAdapter
+import com.androiddevs.mvvmnewsapp.model.Resource
+import com.androiddevs.mvvmnewsapp.ui.MainActivity
+import com.androiddevs.mvvmnewsapp.viewmodel.NewsViewModel
+import kotlinx.android.synthetic.main.fragment_breaking_news.*
 
-class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
+class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
 
     lateinit var viewModel: NewsViewModel
     lateinit var newsAdapter: NewsAdapter
-    var TAG = "SearchNewsFragment"
+    companion object {
+        const val TAG = "BreakingNewsFragment"
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = (activity as NewsActivity).viewModel
+        viewModel = (activity as MainActivity).viewModel
         setupRecyclerView()
 
-        var job: Job? = null
-        etSearch.addTextChangedListener { editable ->
-            job?.cancel()
-            job = MainScope().launch {
-                delay(SEARCH_NEWS_TIME_DELAY)
-                editable?.let {
-                    if(editable.toString().isNotEmpty()) {
-                        viewModel.searchNews(editable.toString())
-                    }
-                }
+        newsAdapter.setOnItemClickListener {
+            val bundle = Bundle().apply {
+                putSerializable("article", it)
             }
+            findNavController().navigate(
+                R.id.action_breakingNewsFragment_to_articleFragment,
+                bundle
+            )
         }
 
-        viewModel.searchNews.observe(viewLifecycleOwner, Observer { response ->
+        viewModel.breakingNews.observe(viewLifecycleOwner, Observer { response ->
             when(response) {
                 is Resource.Success -> {
                     hidingProgressBar()
@@ -53,7 +47,7 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
                 }
                 is Resource.Error -> {
                     hidingProgressBar()
-                    response.message.let {
+                    response.message?.let {
                         Log.e(TAG, it)
                     }
                 }
@@ -62,6 +56,8 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
                 }
             }
         })
+
+//        viewModel.getBreakingNews("us")
     }
 
     private fun hidingProgressBar() {
@@ -74,7 +70,7 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
 
     private fun setupRecyclerView() {
         newsAdapter = NewsAdapter()
-        rvSearchNews.apply {
+        rvBreakingNews.apply {
             adapter = newsAdapter
             layoutManager = LinearLayoutManager(activity)
         }
