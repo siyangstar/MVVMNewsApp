@@ -24,9 +24,11 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(application)).get(
             NewsViewModel::class.java)
         bottomNavigationView.setupWithNavController(newsNavHostFragment.findNavController())
+        //双击tab
         bottomNavigationView.setOnNavigationItemReselectedListener {
             when(it.itemId) {
                 R.id.breakingNewsFragment -> {
+                    //回到列表顶部
                     Constants.breakingNewsPosition = 0
                     (newsNavHostFragment.childFragmentManager.fragments[0] as BreakingNewsFragment).rvBreakingNews.scrollToPosition(0)
                 }
