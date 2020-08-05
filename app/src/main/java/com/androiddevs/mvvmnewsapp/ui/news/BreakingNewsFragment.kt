@@ -1,8 +1,8 @@
 package com.androiddevs.mvvmnewsapp.ui.news
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -48,7 +48,7 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
                 is Resource.Error -> {
                     hidingProgressBar()
                     response.message?.let {
-                        Log.e(TAG, it)
+                        Toast.makeText(activity, "An error occured: $it", Toast.LENGTH_LONG).show()
                     }
                 }
                 is Resource.Loading -> {
@@ -56,8 +56,6 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
                 }
             }
         })
-
-//        viewModel.getBreakingNews("us")
     }
 
     private fun hidingProgressBar() {

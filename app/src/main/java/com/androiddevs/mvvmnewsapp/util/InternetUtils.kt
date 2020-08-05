@@ -9,6 +9,9 @@ import android.os.Build
 
 class InternetUtils(val application: Application) {
 
+    /**
+     * 检查是否有网络连接
+     */
     fun hasInternet(): Boolean {
         val connectivityManager = application.getSystemService(
             Context.CONNECTIVITY_SERVICE

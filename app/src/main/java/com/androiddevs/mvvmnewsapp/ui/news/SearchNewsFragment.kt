@@ -1,8 +1,8 @@
 package com.androiddevs.mvvmnewsapp.ui.news
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -67,7 +67,7 @@ class SearchNewsFragment : Fragment(R.layout.fragment_search_news) {
                 is Resource.Error -> {
                     hidingProgressBar()
                     response.message?.let {
-                        Log.e(TAG, it)
+                        Toast.makeText(activity, "An error occured: $it", Toast.LENGTH_LONG).show()
                     }
                 }
                 is Resource.Loading -> {
